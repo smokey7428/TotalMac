@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleExecutable</key>
+	<string>TotalMac</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.totalmac.app</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>TotalMac</string>
+	<key>CFBundleDisplayName</key>
+	<string>TotalMac</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.5.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>TotalMacBuildNumber</key>
+	<integer>1</integer>
+	<key>TotalMacBuildDate</key>
+	<string>development build</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>14.0</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.utilities</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>TotalMac — a dual pane file manager inspired by Total Commander.</string>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>TotalMac opens files with other applications on your behalf.</string>
+	<key>NSDesktopFolderUsageDescription</key>
+	<string>TotalMac needs access to browse and manage files in your Desktop folder.</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>TotalMac needs access to browse and manage files in your Documents folder.</string>
+	<key>NSDownloadsFolderUsageDescription</key>
+	<string>TotalMac needs access to browse and manage files in your Downloads folder.</string>
+	<key>NSRemovableVolumesUsageDescription</key>
+	<string>TotalMac needs access to browse external volumes.</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Folder</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.folder</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>

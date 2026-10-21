@@ -1,0 +1,81 @@
+name: Self checks
+
+# Builds the app the way a user would (./build.sh), verifies the version stamp
+# and runs the 232 headless checks inside the bundled app.
+#
+# The suite is the safety net described in AGENTS.md §3: if a change breaks the
+# Total Commander cursor, archive handling, the copy engine or the favorites,
+# this goes red on push.
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**.md"
+      - "LICENSE"
+  pull_request:
+  workflow_dispatch:
+  # macOS runners occasionally go 15+ minutes without capacity and GitHub then
+  # cancels the run ("not acquired by Runner ... after multiple attempts"). A
+  # quiet weekly run heals the badge when that happens; re-running a cancelled
+  # run from the Actions tab does the same.
+  schedule:
+    - cron: "0 5 * * 1"
+
+concurrency:
+  group: selfchecks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: Build, bundle and run the self checks
+    # Pin an Intel image: `macos-latest` now points at an arm64 runner and those
+    # are frequently starved of capacity ("not acquired by Runner ... after
+    # multiple attempts"). The project builds and tests on either architecture.
+    runs-on: macos-15
+    timeout-minutes: 25
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Show the toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+          sw_vers
+
+      - name: Build the app bundle
+        env:
+          ARCHIVE: "0"
+        run: ./build.sh release
+
+      - name: Verify the version stamp
+        run: |
+          set -euo pipefail
+          VERSION="$(tr -d '[:space:]' < VERSION)"
+          PLIST="dist/TotalMac.app/Contents/Info.plist"
+          BUNDLE_VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$PLIST")"
+          BUILD_NUMBER="$(/usr/libexec/PlistBuddy -c 'Print :TotalMacBuildNumber' "$PLIST")"
+          echo "VERSION file: $VERSION"
+          echo "bundle:       $BUNDLE_VERSION (build $BUILD_NUMBER)"
+          test "$VERSION" = "$BUNDLE_VERSION" || {
+            echo "::error::the bundle version does not match the VERSION file"
+            exit 1
+          }
+          test "$BUILD_NUMBER" -ge 1 || {
+            echo "::error::the build number was not stamped"
+            exit 1
+          }
+
+      - name: Self checks
+        run: dist/TotalMac.app/Contents/MacOS/TotalMac --selftest
+
+      - name: Upload the app
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TotalMac-app
+          path: dist/TotalMac.app
+          retention-days: 14
+          if-no-files-found: ignore
